@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Monster : MonoBehaviour
 {
@@ -9,13 +10,22 @@ public class Monster : MonoBehaviour
     public GameObject deathEffect;
     public float startHealth = 100;
     private float health;
-    public int worth = 50;
+    public static int worth = 50;
+    public int monsterWorth;
     [Header("Unity Stuff")]
-    //public Image healthBar;
+    public Image healthBar;
     private bool isDead = false;
+    
+    //Attack
+    public static int damageMonster = 10;
+    private float nextAttack = 0.0F;
+    private float AttackRate = 2.5f;
+
 
     private void Start()
     {
+        monsterWorth = worth;
+
         Fresh();
         animator = GetComponent<Animator>();
         GameObject player = GameObject.Find("Player");
@@ -23,6 +33,10 @@ public class Monster : MonoBehaviour
         {
             GetComponent<NavMeshAgent>().destination = player.transform.position;
         }
+    }
+    private void Update()
+    {
+        monsterWorth = worth;
     }
 
     private void Fresh()
@@ -36,11 +50,10 @@ public class Monster : MonoBehaviour
     public void TakeDamage(float amount)
     {
         health -= amount;
-        Debug.Log("Vie slime: " + health);
-        //healthBar.fillAmount = health / startHealth;
+        healthBar.fillAmount = health / startHealth;
         if (health <= 0 && !isDead)
         {
-            PlayerStats.Money += worth;
+            PlayerStats.Money += monsterWorth;
             Die();
         }
     }
@@ -48,13 +61,8 @@ public class Monster : MonoBehaviour
     void Die()
     {
         isDead = true;
-        //gameObject.GetComponent<Collider>().enabled = false;
-        //gameObject.GetComponent<NavMeshAgent>().speed = 0;
+        WaveSpawner.EnemiesAlive--;
         gameObject.transform.position = new Vector3(transform.position.x, 0, transform.position.z);
-        //Avec l'animation "Die"
-        //animator.SetTrigger("die");
-        //Destroy(gameObject, 1.1f);
-
         //Avec l'effet Death
         //NOTE : avec l'effet Death, plus besoin de stopper le mouvement car mort instantanée
         GameObject effectIns = (GameObject)Instantiate(deathEffect, transform.position, transform.rotation);
@@ -67,9 +75,24 @@ public class Monster : MonoBehaviour
     {
         if (col.gameObject.name == "Player")
         {
-            Debug.Log("Player touched");
             PlayerStats.Lives -= 1;
             Die();
+        }
+        Wall wall = col.gameObject.GetComponent<Wall>();
+        if (col.gameObject.CompareTag("Wall"))
+        {
+            nextAttack = Time.time + AttackRate;
+            wall.TakeDamageFromMonster(damageMonster);
+        }
+    }
+
+    private void OnCollisionStay(Collision collision)
+    {
+        Wall wall = collision.gameObject.GetComponent<Wall>();
+        if (collision.gameObject.CompareTag("Wall") && Time.time > nextAttack)
+        {
+            nextAttack = Time.time + AttackRate;
+            wall.TakeDamageFromMonster(damageMonster);
         }
     }
 

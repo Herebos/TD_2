@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    public float damage = 50;
+    public static int FirePower = 50;
+    public float damage;
 
     private void Start()
     {
+        damage = FirePower;
         StartCoroutine(DestroyAfterX());
+    }
+    private void Update()
+    {
+        damage = FirePower;
     }
 
     private void OnCollisionEnter(Collision col)
@@ -26,15 +32,5 @@ public class Bullet : MonoBehaviour
         yield return new WaitForSeconds(2);
         Destroy(gameObject);
     }
-
-    /*private void OnTriggerEnter(Collider col)
-    {
-        Health health = col.GetComponentInChildren<Health>();
-        if (health)
-        {
-            health.Decrease();
-            Destroy(gameObject);
-        }
-    }*/
 
 }
