@@ -179,11 +179,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04dc10aab0408bd428346861a93e401f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeBetweenShots: 0.3
+  timeBetweenShots: 1
   bulletPrefab: {fileID: 303700602859211096, guid: c2ac953cda7765f419adb6300ee8904f, type: 3}
   player: {fileID: 3938520099153829915, guid: b4e6ca87c42a2894681879fb42c4a35f, type: 3}
   canon: {fileID: 1138324775226650159}
-  bulletSpeed: 200
+  bulletSpeed: 50
 --- !u!1 &1142034724558553571
 GameObject:
   m_ObjectHideFlags: 0
