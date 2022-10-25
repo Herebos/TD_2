@@ -37,6 +37,7 @@ public class WaveSpawner : MonoBehaviour
 
 		if (countdown <= 0f)
 		{
+			Monster.startHealth += 5;
 			StartCoroutine(SpawnWave());
 			countdown = timeBetweenWaves;
 			return;

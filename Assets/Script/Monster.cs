@@ -8,8 +8,8 @@ public class Monster : MonoBehaviour
 {
     Animator animator;
     public GameObject deathEffect;
-    public float startHealth = 100;
-    private float health;
+    public float health;
+    public static float startHealth = 90;
     public static int worth = 50;
     public int monsterWorth;
     [Header("Unity Stuff")]

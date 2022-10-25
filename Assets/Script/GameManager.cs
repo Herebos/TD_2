@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,6 +21,12 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
+        //Quit game
+        if (Input.GetKey("escape"))
+        {
+            Application.Quit();
+        }
+
         livesText.text = PlayerStats.Lives.ToString() + " Vie";
         moneyText.text = PlayerStats.Money.ToString() + " $";
         wavesText.text = "Waves " + PlayerStats.Rounds.ToString() +"/6";
@@ -60,6 +67,7 @@ public class GameManager : MonoBehaviour
     {
         gameIsOver = true;
         gameOverUI.SetActive(true);
+        PauseGame();
     }
 
 }

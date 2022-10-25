@@ -7,7 +7,11 @@ using UnityEngine.UI;
 public class Upgrade : MonoBehaviour
 {
     public GameObject wallPrefab;
+    public GameObject dronePrefab;
+    public int MonsterWorthAdd = 0;
 
+    //Gun
+    [Header("Gun")]
     public TMP_Text currentFirePower;
     public TMP_Text btnTextFirePower;
     public TMP_Text currentBulletSpeed;
@@ -18,6 +22,8 @@ public class Upgrade : MonoBehaviour
     public Button btnBulletSpeed;
     public Button btnFirePower;
 
+    //Player
+    [Header("Player")]
     public TMP_Text currentUpgradeLife;
     public TMP_Text btnTextUpgradeLife;
     public TMP_Text currentUpgradeMoney;
@@ -25,19 +31,28 @@ public class Upgrade : MonoBehaviour
     public Button btnUpgradeLife;
     public Button btnUpgradeMoney;
 
+    //Addon
+    [Header("Addon")]
     public Button btnDrone;
     private bool droneBought = false;
     public Button btnWall;
     private bool wallBought = false;
-
-    public int MonsterWorthAdd = 0;
+    public Button btnLaserSight;
+    private bool laserBought = false;
 
     //Upgrade price
+    [Header("Price")]
     int FireSpeedPrice = 50;
     int BulletSpeedPrice = 20;
     int FirePowerPrice = 50;
     int LifePrice = 100;
     int MoneyPrice = 100;
+
+    //Tab Selection
+    [Header("Tab")]
+    public GameObject GunUpgradeUI;
+    public GameObject PlayerUpgradeUI;
+    public GameObject AddonUI;
 
     private void Update()
     {
@@ -56,6 +71,15 @@ public class Upgrade : MonoBehaviour
         } else
         {
             btnWall.interactable = true;
+        }
+        //LaserSight
+        if (PlayerStats.Money < 200 || laserBought == true)
+        {
+            btnLaserSight.interactable = false;
+        }
+        else
+        {
+            btnLaserSight.interactable = true;
         }
 
 
@@ -82,7 +106,7 @@ public class Upgrade : MonoBehaviour
             btnBulletSpeed.interactable = true;
         }
         //FirePower
-        currentFirePower.text = "FirePower +1<br>Current: " + Bullet.FirePower.ToString();
+        currentFirePower.text = "FirePower +2<br>Current: " + Bullet.FirePower.ToString();
         btnTextFirePower.text = "Upgrade<br>" + FirePowerPrice + " $";
         if (PlayerStats.Money < FirePowerPrice)
         {
@@ -123,28 +147,22 @@ public class Upgrade : MonoBehaviour
     //FireSpeed
     public void BuyFireSpeed()
     {
-        Debug.Log("Bought FireSpeed");
         PlayerStats.Money -= FireSpeedPrice;
         Gun.TmBtSh -= 0.01f;
-        Debug.Log(Gun.TmBtSh);
         FireSpeedPrice += 10;
     }
     //BulletSpeed
     public void BuyBulletSpeed()
     {
-        Debug.Log("Bought BulletSpeed");
         PlayerStats.Money -= BulletSpeedPrice;
         Gun.BulletSpeed += 1;
-        Debug.Log(Gun.BulletSpeed);
         BulletSpeedPrice += 10;
     }
     //FirePower
     public void BuyFirePower()
     {
-        Debug.Log("Bought FirePower");
         PlayerStats.Money -= FirePowerPrice;
-        Bullet.FirePower += 1;
-        Debug.Log(Bullet.FirePower);
+        Bullet.FirePower += 2;
         FirePowerPrice += 10;
     }
 
@@ -152,20 +170,16 @@ public class Upgrade : MonoBehaviour
     //Lives
     public void BuyLife()
     {
-        Debug.Log("Bought Live");
         PlayerStats.Money -= LifePrice;
         PlayerStats.Lives += 1;
-        Debug.Log(PlayerStats.Lives);
         LifePrice += 100;
     }
     //Money
     public void BuyMoney()
     {
-        Debug.Log("Bought Money");
         PlayerStats.Money -= MoneyPrice;
         MonsterWorthAdd += 1;
         Monster.worth += MonsterWorthAdd;
-        Debug.Log(MonsterWorthAdd);
         MoneyPrice += 100;
     }
 
@@ -173,21 +187,55 @@ public class Upgrade : MonoBehaviour
     //Drone button
     public void BuyDrone() 
     {
-        Debug.Log("Bought Drone " + droneBought);
         PlayerStats.Money -= 5000;
         droneBought = true;
+        Instantiate(dronePrefab, new Vector3(-19.289f, 0.928f, 0.88f), Quaternion.Euler(0, 90, 0));
     }
 
     //Wall button
     public void BuyWall()
     {
-        Debug.Log("Bought Wall " + wallBought);
         PlayerStats.Money -= 500;
         wallBought = true;
-        Instantiate(wallPrefab, new Vector3(-17.86f, -0.179f, 1.634f), Quaternion.Euler(0, 0, 0));
+        Instantiate(wallPrefab, new Vector3(-18.06584f, 0.129f, 1.553496f), Quaternion.Euler(0, 87.588f, 0));
     }
 
-    
+    //LaserSight button
+    public void BuyLaserSight()
+    {
+        PlayerStats.Money -= 200;
+        laserBought = true;
+        Gun.ActivateLaserSight();
+    }
+
+    //Tab Selection
+    public void GunTabOpen()
+    {
+        if (GunUpgradeUI.activeSelf == false)
+        {
+            GunUpgradeUI.SetActive(true);
+            PlayerUpgradeUI.SetActive(false);
+            AddonUI.SetActive(false);
+        }
+    }
+    public void PlayerTabOpen()
+    {
+        if (PlayerUpgradeUI.activeSelf == false)
+        {
+            GunUpgradeUI.SetActive(false);
+            PlayerUpgradeUI.SetActive(true);
+            AddonUI.SetActive(false);
+        }
+    }
+    public void AddonTabOpen()
+    {
+        if (AddonUI.activeSelf == false)
+        {
+            GunUpgradeUI.SetActive(false);
+            PlayerUpgradeUI.SetActive(false);
+            AddonUI.SetActive(true);
+        }
+    }
 
 
 }
